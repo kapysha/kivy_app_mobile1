@@ -1,0 +1,141 @@
+#:import Factory kivy.factory.Factory
+#:import utils kivy.utils
+
+<ContentNavigationDrawer>
+    ScrollView:
+        MDList:
+            OneLineListItem:
+                text: 'Регистрация'
+                on_release:
+                    root.drawer.set_state('close')
+                    root.screen_manager.current = 'registration_screen'
+            OneLineListItem:
+                text: 'Инструкция'
+                on_release:
+                    root.drawer.set_state('close')
+                    root.screen_manager.current = 'instruction_screen'
+
+<SendPopup@Popup>
+    auto_dismiss: False
+    title: 'Введите код'
+    title_align: 'center'
+    title_size: '25sp'
+    size_hint: (0.8, 0.3)
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 16
+        spacing: 12
+
+        MDTextField:
+            mode: 'line'
+            id: code_input
+            font_size: '18sp'
+            multiline: False
+            size_hint_y: None
+            height: '30sp'
+            text_color_focus: "white"
+            line_color_focus: "white"
+            max_text_length: 5
+            text_color_normal: (213/255, 210/255, 210/255, 1)
+            input_type: 'number'
+            input_filter: 'int'
+
+
+        MDRectangleFlatButton:
+            pos_hint: {"center_x": .5}
+            _min_width: 300
+            text: 'Отправить'
+            on_press: root.authorization()
+
+<MDLabel>
+    font_size: '20dp'
+
+
+<MDTextField>
+    mode: "line"
+    text_color_focus: "black"
+    line_color_focus: "black"
+    text_color_normal: (74/255, 74/255, 74/255, 1)
+
+MyBoxLayout:
+    orientation: 'vertical'
+
+    MDTopAppBar:
+        title: 'Меню'
+        left_action_items: [['menu', lambda x: drawer.set_state('open')]]
+        anchor_title: 'left'
+    MDNavigationLayout:
+        ScreenManager:
+            id: screen_manager
+            Screen:
+                name: 'registration_screen'
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    padding: dp(20)
+
+                    GridLayout:
+                        cols: 2
+                        row_default_height: '50dp'
+                        row_force_default: True
+                        spacing: dp(10)
+
+                        MDLabel:
+                            text: 'API_HASH'
+
+                        MDTextField:
+                            id: hash
+
+                        MDLabel:
+                            text: 'API_ID'
+
+                        MDTextField:
+                            id: id
+                            input_type: 'number'
+                            input_filter: 'int'
+
+                        MDLabel:
+                            text: 'Chat_id'
+
+                        MDTextField:
+                            id: chat_id
+                            input_type: 'number'
+                            input_filter: 'int'
+
+                        MDLabel:
+                            text: 'Number'
+
+                        MDTextField:
+                            id: number
+                            input_type: 'number'
+                            input_filter: 'int'
+                            hint_text: 'Напишите без "+"'
+
+                    GridLayout:
+                        #pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                        spacing: dp(8)
+                        cols: 1
+
+                        MDRectangleFlatButton:
+                            text: 'Отправить'
+                            size_hint: 1, None
+                            _min_height: '50sp'
+                            on_release: Factory.SendPopup().open() if root.press_save_autoriz() else None
+
+
+            Screen:
+                name: 'instruction_screen'
+                id: screen_two
+                MDBoxLayout:
+                    padding: dp(20)
+                    MDLabel:
+                        text: '1. API_ID и API_HASH:\n\nПолная инструкция по получению API_ID и API_HASH находится на сайте  ->  https://telegra.ph/Instrukciya-po-polucheniyu-Api-id-i-Api-hash-11-03\n\n2. Чат_ID:\n\nЗайдите в Telegram и найдите бота: @GetMyChatID_Bot\nНапишите боту любое сообщение.\nБот ответит вам вашим Chat_ID.\n\n3. Бот для бесплатной рассылки:\n\nИспользуйте бота: @freemailing_bot  для отправки бесплатных сообщений в разные чаты.'
+                        pos_hint: {'center_y': 0.6, 'center_x': 0.5}
+
+
+
+        MDNavigationDrawer:
+            id: drawer
+
+            ContentNavigationDrawer:
+                drawer: drawer
+                screen_manager: screen_manager
